@@ -1,0 +1,6 @@
+#!/bin/csh
+set ips = $1
+#set cmax = 4
+foreach pattern ( cbt_x9y9z9 cgs_x9y9z9 )
+csh plt_dv.syn.input.8map.csh $pattern $ips
+end

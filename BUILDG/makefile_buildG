@@ -1,0 +1,28 @@
+# makefile for buildG
+# compile in gluon machine
+# not working for ifort compiler???
+#FC	= ifort
+#FFLAGS   = -132 -g -debug -O -mcmodel=medium
+FC	= gfortran
+FFLAGS = -ffixed-line-length-none -fbounds-check
+# specify libraries
+PROG1    = buildG
+PROG2	= addG_sta_evtcor
+PROG3	= buildG_tc
+
+# list object files
+OBJS	=	buildG_subs.o
+
+all:	${PROG1} ${PROG2} ${PROG3}
+
+$(PROG1):	buildG.f $(OBJS)
+	$(FC) buildG.f $(FFLAGS) -o $(PROG1) $(OBJS)
+
+$(PROG2):	addG_sta_evtcor.f
+	$(FC) addG_sta_evtcor.f $(FFLAGS) -o $(PROG2)
+
+$(PROG3):	buildG_tc.f $(OBJS)
+	$(FC) buildG_tc.f $(FFLAGS) -o $(PROG3) $(OBJS)
+
+clean:
+	rm -f *.o

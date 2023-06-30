@@ -1,0 +1,21 @@
+#set refmdl = ( prem prem.tc iasp iasp.tc )
+set refmdl = ( ak1c.tc )
+@ i = 1
+set perc = 0.05
+set idemean = 0
+set iflagdeg = 1
+set phase = S
+set sigma = 0
+set cmax = 3.5
+foreach para ( KM.tc  )
+foreach ws ( 1 10 )
+foreach damp ( 3000 5000 7000 )
+foreach fq ( hm m )
+#csh -x plt_dvs.8map.SM.csh $cmax $damp $perc $para $refmdl[1] $ws $fq
+csh -x plt_dvs.4map.2x.SM.csh $cmax $damp $perc $para $refmdl[1] $ws $fq
+#plt_dvs.5x.csh $cmax $damp $perc $para $ws $idemean $phase $fq $iflagdeg $sigma
+end # end of foreach fq
+end # end of foreach damp
+end # end of foreach ws
+end # end of foreach para
+/bin/rm image.lyr* tria.out

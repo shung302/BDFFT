@@ -1,0 +1,20 @@
+c... common storage for coefficient matrix
+c     row order with coefficients, col index, and number
+c     in row
+c ... definition of variables
+c       m,n = dimensions of system of equations (m by n)
+c       nel = total number of active elements in A
+c       ra = coefficient matrix values
+c       ja = column indices
+c       na = array of number of active elements per row
+
+
+      integer small
+      parameter (small=mvolu+mdata)
+      integer m,n,nel,na(small)
+      double precision x(small),b(small),u(small),v(small),w(small),
+     $                 q(small),sig(small),res2,ra(small)
+      integer ja(small)
+      common /thing/ ra,m,n,nel,ja,na
+      common /conjg/ x,b,u,v,w,q,sig,res2
+

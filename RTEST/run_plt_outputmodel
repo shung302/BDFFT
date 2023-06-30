@@ -1,0 +1,73 @@
+set cmax = 4
+set ccmdl = ak1c.tc
+set para = KM
+set sigma = 0
+set ps = s   # ips=p for P ; = s for S
+#goto KH
+foreach pattern ( cbt_x9y9z9 )
+foreach noise ( 0 0.05 0.1 )
+foreach fq ( hm )
+foreach damp ( 200 500 )
+csh plt_dv.syn.output.8map.csh  $cmax $damp $noise $para $ccmdl $fq $sigma $pattern $ps
+end
+end
+end
+end
+exit
+goto KH
+#
+KS:
+set para = KS
+set sigma = 0
+#foreach pattern ( cbt_x4y4z4 cbt_x6y6z6 cbt_x8y8z8 )
+foreach pattern ( cgs_x5y5z5 cgs_x7y7z7 cgs_x9y9z9 )
+#foreach pattern ( cbt_x6y6z6 cbt_x8y8z8 cbt_x4y4z4 )
+foreach noise ( 0 0.05  )
+foreach fq ( hm )
+#foreach damp ( 50 100 200 )
+foreach damp ( 50 100 200 500 1000 )
+#plt_dvp.8map.syn.agu.cmd  $cmax $damp $noise $para $mdl $fq $sigma $pattern
+#plt_dvp.8map.syn.2.agu.cmd  $cmax $damp $noise $para $mdl $fq $sigma $pattern
+plt_dvp.5x.syn.agu.cmd $cmax $damp $noise $para $mdl $fq $sigma $pattern
+end
+end
+end
+end
+
+KH:
+set para = KH
+set cmax = 3
+#foreach pattern ( cgs_x5y5z5 cgs_x7y7z7 cgs_x9y9z9 )
+#foreach pattern ( cgs_x5y5z5 cgs_x7y7z7 cgs_x9y9z9 cbt_x4y4z4 cbt_x6y6z6 cbt_x8y8z8 )
+foreach pattern ( cgs_x5y5z5 cgs_x7y7z7 cgs_x9y9z9 )
+foreach noise ( 0 0.05  )
+#foreach noise ( 0  )
+foreach sigma ( 2 1 )
+#foreach fq ( hm hml h )
+foreach fq ( hm )
+foreach damp ( 50 100 200 500 )
+plt_dvp.8map.syn.agu.cmd  $cmax $damp $noise $para $mdl $fq $sigma $pattern
+#plt_dvp.8map.syn.2.agu.cmd  $cmax $damp $noise $para $mdl $fq $sigma $pattern
+plt_dvp.5x.syn.agu.cmd $cmax $damp $noise $para $mdl $fq $sigma $pattern
+end
+end
+end
+
+end
+end
+
+set para = KQ
+foreach pattern ( cgs_x5y5z5 cgs_x7y7z7 cgs_x9y9z9 )
+#foreach pattern ( cbt_x4y4z4 cbt_x6y6z6 cbt_x8y8z8 )
+foreach noise ( 0 0.05  )
+foreach sigma ( 1 2 )
+foreach fq ( hm )
+foreach damp ( 50 100 200 500 1000 )
+plt_dvp.8map.syn.agu.cmd  $cmax $damp $noise $para $mdl $fq $sigma $pattern
+#plt_dvp.8map.syn.2.agu.cmd  $cmax $damp $noise $para $mdl $fq $sigma $pattern
+plt_dvp.5x.syn.agu.cmd $cmax $damp $noise $para $mdl $fq $sigma $pattern
+end
+end
+end
+end
+end

@@ -1,0 +1,111 @@
+The BDFFT (banana-doughnut finite-frequency tomography) package contains 3 directories used to construct the 3D P or S velocity tomographic images using user-provided cross-correlation measured traveltime residuals of teleseismic body wave phases.
+1. Make mesh for target region
+cd BUILDG
+Use makefile to compile fortran programs mesh_car.f and oblique_mesh.f: 
+make mesh_car
+make oblique_mesh
+run mesh_car.f or oblique_mesh.f to build the 3D grid mesh covering the study region.
+see c-shell scripts how to create and plot the created mesh of the model.
+csh pltmesh.csh
+csh pltoblique_mesh.csh
+
+cd ../
+2. Ray tracing of each source-receiver pair
+cd NEWSHOOT
+First use makefile to compile ray-shooting fortran programs:
+make clean
+make
+(Make sure subdirectory iasp/ exists!)
+run scripts shoot.S.csh for S and shoot.P.csh for P to do ray tracing.
+**input files: 
+(1) stations_used (contain all the stations used) 
+(2) example file including all cc measured tt residual data: S.m.hic.evtlst
+**output files: 
+(1) shootrays.S.m.hic.ak1c (coordinates of ray paths)
+(2) shootrays.bp.m.hic.ak1c (ray-bottoming points)
+
+3. Build G matrix
+cd BUILDG
+Use makefile_buildG to compile several programs used for building G-matrix and adding station/event correction terms in G: make -f makefile_buildG
+make -f makefile_buildG clean
+make -f makefile_buildG
+run buildG.fm.csh
+The shell did three parts: 
+(1) Build G-ray matrix for each phase at each frequency; 
+(2) apply topography correction on tt
+(3) add G matrix together for different phases; 
+(4) add station and event correction terms to the summed G matrix for the inversion.
+
+** input files:
+NEWSHOOT/shootray.S.m.hic.ak1c
+NEWSHOOT/S.m.hic.datsta
+NEWSHOOT/S.m.hic.stacor
+** output files:
+Gw_ray_d_S.m.hic.ak1c, G_ray_d_S.m.hic.ak1c : weighted and non-weighted G matrix with raw tt data
+Gw_ray_d_S.m.hic.ak1c.tc, G_ray_d_S.m.hic.ak1c.tc : weighted and non-weighted G matrix with topo-corrected tt data
+Gw_ray_d_se_S.m.hic.ak1c, G_ray_d_se_S.m.hic.ak1c : weighted and non-weighted G matrix plus station/event correction terms with raw tt data 
+Gw_ray_d_se_S.m.hic.ak1c.tc, G_ray_d_se_S.m.hic.ak1c.tc : weighted and non-weighted G matrix plus station/event correction terms with topo-corrected tt data 
+
+4. Generate source time functions used to calculate finite-frequency kernels for each frequency band
+# suggest to find the representative events with good waveforms for each phase and frequency band, and
+# stack waveforms together after correcting cross-correlation measured time shifts and calculate the corresponding spectrum as STF
+
+cd waveform_stf
+see example cshell scripts, e.g., stack_S_waveform.csh
+cd ../
+
+5. Calculate finite-frequency kernel of each measured tt w.r.t. slowness perturbation (kernbg27_both.f) or w.r.t. velocity perturbation (kernbg27_both_vel.f)
+cd KERNEL
+Use makefile to compile the fortran programs used to calculate finite-frequency kernels for a given tt data:
+make clean
+make
+(1) Calculate the kernels at grid points obtained from ray tracing output.
+k27.both.P.csh for P and k27.both.S.csh for S
+(2) Build G-kernel matrix with computed kernel values, summed G-matrix for different frequency and phases together, add station and event correction terms to the summed G matrix
+buildG_kern.fm.cmd    
+(3) Replace the data vector in the built G-kernel matrix if topo or crust corrected tt data to be used in tomography.
+change_d.csh
+cd ../
+
+6. Conduct tomographic inversion using wavelet-based multiscale, hybrid, convolutional, simple_damping regularziation
+Use makefile to compile the fortran programs to perform the multiscale inversion:
+make solver_WSE  (solver_WSE.f used to invert real data for slowness perturbation model and station/event correction terms)
+make solver_noSE_wgtnoise_perc (solver_noSE_wgtnoise_perc.f used to add errors to synthetic data and invert them for resolution test)
+# for kernel based tomography
+cd ../KM.tc
+inv.km.csh           # Multiscale
+cd INV/KH.tc
+inv.kh.csh           # Hybrid ( Vertical quelling & Horizontal Muitiscale)
+cd ../KQ.tc
+#inv.kq.csh           # Quelling
+cd ../KS.tc
+#inv.ks.csh           # Simple Damping
+cd ../../
+
+# for ray-based tomography
+cd ../RM.tc
+inv.rm.csh           # Multiscale
+cd INV/RH.tc
+inv.rh.csh           # Hybrid ( Vertical quelling & Horizontal Muitiscale)
+cd ../RQ.tc
+inv.rq.csh           # Quelling
+cd ../RS.tc
+inv.rs.csh           # Simple Damping
+cd ../../
+
+7. Result demonstration
+cd PLOTS/
+run tradeoff_all: run GMT script of plt_tradeoff_SM.csh to plot tradeoff curve of model variance (and model norm) vs. data reduction.
+run_plt_gtg: run GMT script of plt_gtg.8map.csh to plot data sampling density (diag(GTG)) on each consant-depth layer.
+run_plt_dvs.SM: run GMT script of plt_dvs.4map.2x.SM.csh to plot 2-D map & cross-sectional views of 3D tomographic results.
+
+8. Resolution test
+cd RTEST/
+
+buildG_syn_checkboard.csh: shell used to generate checkerboard-type synthetic model with alternative constant positive and negative slowness perturbations in checkerboards. 
+Also build the corresponding G-matrix with synthetic traveltime data and put it in the named directory.
+buildG_syn_check_gauss.csh: shell used to generate checkerboard-type synthetic model with alternative gaussian-shaped positive and negative slowness perturbations in checkerboards.
+Also build the corresponding G-matrix with synthetic traveltime data and put it in the named directory.
+run_plt_inputmodel: run GMT script of plt_dv.syn.input.8map.csh to plot 2-D map views of the synthetic model.
+run_plt_outputmodel: run GMT script of plt_dv.syn.output.8map.csh to plot 2-D map views of the synthetic model.
+To perform the inversion of generated synthetic data, go to the name directory, such as cbt_x9y9z9 and run the script of run_inv_checkboard-syn.csh.

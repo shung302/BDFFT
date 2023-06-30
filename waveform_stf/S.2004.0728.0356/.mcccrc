@@ -1,0 +1,15 @@
+% .mcccrc : optional file to set MCCC default parameters
+% MCCC first looks for this in the local and then home directory
+% if not found in either, the variables default to values shown in ( ).
+t0      % sac variable from which to read initial picks (t0)
+10 
+1.       % inset length in seconds (1.0)
+1.       % taper length in seconds (1.0)
+2     % 1st level shift length in seconds (1.0
+0.1       % 2nd level shift length in seconds (0.1)
+0.05      % 3rd level shift length in seconds (0.05)
+100.0     % sample rate for interpolation (100.0)
+BU        % filter design type (BU)               * used ONLY with -f option
+0.3       % transition bandwidth in seconds (0.3) * used ONLY with -f option
+30.0      % attenuation factor in decibles (30.0) * used ONLY with -f option
+2         % number of poles for filter use (2)    * used ONLY with -f option

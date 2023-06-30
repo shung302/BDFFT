@@ -1,0 +1,35 @@
+c ... common storage for coefficient matrix
+c     row order with coefficients, col index, and number
+c     in row
+c ... definition of variables
+c       m,n = dimensions of system of equations (m by n)
+c       nel = total number of active elements in A
+c       ra = coefficient matrix values
+c       ja = column indices
+c       na = array of number of active elements per row
+
+
+      integer*8 big,small
+      parameter(mlevelx=7,mlevely=7,mlevelz=7,
+     ,          mx=2**(mlevelx-1)+1,my=2**(mlevely-1)+1,
+     ,          mz=2**(mlevelz-1)+1,mvolu=mx*my*mz,
+     ,          mst=500,mev=5000,mvar=mvolu+mst+mev,
+     ,          ndat0=100000)
+c      parameter (small=mvar+ndat0,big=178850000)
+c      parameter (small=mvar+ndat0,big=178000000)
+c  memory full - hard disk swapping
+c
+c      parameter (small=mvar+ndat0,big=268430000)
+       parameter (small=mvar+ndat0,big=500000000)
+c      parameter (small=mvar+ndat0,big=5000000000)
+      integer m,n,nel,ja(big),na(small)
+      double precision ra(big)
+      double precision x(small),b(small),u(small),v(small),w(small),
+     $                  q(small),sig(small),res2
+c      common /thing/ ra,m,n,nel,ja,na
+c   y. shen, 09/09/04
+c   to increase the size of the allowable non-zero coefficient in the G matrix
+c  
+	common /thing1/ ra
+	common /thing2/ ja,na,m,n,nel
+      common /conjg/ x,b,u,v,w,q,sig,res2

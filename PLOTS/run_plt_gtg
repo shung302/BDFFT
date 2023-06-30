@@ -1,0 +1,17 @@
+#!/bin/csh
+goto k
+set K = ray
+foreach mdl ( ak1c.tc )
+foreach GM ( Gw G )
+plt_gtg.8map.csh $K $mdl $GM m
+end
+end
+k:
+set K = kernel
+foreach mdl ( ak1c.tc )
+foreach GM ( G Gw )
+foreach fq ( hm )
+plt_gtg.8map.csh $K $mdl $GM $fq
+end
+end
+end

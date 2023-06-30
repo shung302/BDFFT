@@ -1,0 +1,120 @@
+#set refmdl = ( prem prem.tc iasp iasp.tc )
+set refmdl = ( ak1c.tc )
+set perc = 0
+set idemean = 0
+set iflagdeg = 1
+set phase = S
+set cmax = 3.5
+foreach perc ( 0.5 )
+@ i = 0
+foreach para ( KM.tc )
+@ i ++
+@ ip = 1
+set GM = `echo $para | awk -F. '{print $1}'`
+\rm dvs.pdf.*
+set PDF = dvs.$GM.$refmdl[$i].5x.${perc}.pdf
+set cmax = 3.5
+foreach ws ( 1 10 )
+set weight = ${ws}-${ws}
+foreach damp ( 7000 10000 )
+foreach fq ( m )
+plt_dvs.3x.csh $cmax $damp $perc $para $ws $idemean $phase $fq $iflagdeg
+set PS =  dvs.multis_kern.tc.P.$fq.wgt.${weight}_${damp}.1.5.${perc}.5x.ps
+ps2pdf $PS dvs.pdf
+mv dvs.pdf dvs.pdf.${ip}
+@ ip = $ip + 1
+end # end of foreach fq
+end # end of foreach damp
+end # end of foreach ws
+\ls dvs.pdf.? > junk
+\ls dvs.pdf.?? >> junk
+set pdfiles = `cat junk`
+gs -dBATCH -dNOPAUSE -q -sDEVICE=pdfwrite -sOutputFile=$PDF $pdfiles
+\rm dvs.pdf.*
+end # end of foreach para
+exit
+# for RM case
+@ i = 0
+RM:
+#foreach para ( RM RM.tc RM RM.tc )
+foreach para ( RM.tc )
+@ i ++
+@ ip = 1
+set GM = `echo $para | awk -F. '{print $1}'`
+\rm dvs.pdf.*
+set PDF = dvs.$GM.$refmdl[$i].5x.${perc}.pdf
+set cmax = 2
+foreach ws ( 1 )
+foreach damp ( 1000 2000 5000 )
+foreach fq ( h m l )
+plt_dvs.5x.cmd $cmax $damp $perc $para $ws $idemean $phase $fq $iflagdeg
+set PS =  dvs.multis_ray.tc.P.$fq.wgt.${weight}_${damp}.1.5.${perc}.5x.ps
+ps2pdf $PS dvs.pdf
+mv dvs.pdf dvs.pdf.${ip}
+@ ip = $ip + 1
+end
+end
+end
+\ls dvs.pdf.? > junk
+\ls dvs.pdf.?? >> junk
+set pdfiles = `cat junk`
+gs -dBATCH -dNOPAUSE -q -sDEVICE=pdfwrite -sOutputFile=$PDF $pdfiles
+\rm dvs.pdf.*
+end
+KS:
+# for KS and RS
+set refmdl = ( iasp.tc )
+@ i = 0
+foreach para ( KS.tc  )
+@ i ++
+@ ip = 1
+set GM = `echo $para | awk -F. '{print $1}'`
+\rm dvs.pdf.*
+set PDF = dvs.$GM.$refmdl[$i].5x.pdf
+set cmax = 2
+foreach ws ( 1 )
+#foreach damp ( 200 500 1000 )
+foreach damp ( 50 100 200 )
+foreach fq ( hm hml h m l )
+plt_dvs.5x.cmd $cmax $damp $perc $para $ws $idemean $phase $fq $iflagdeg
+set PS =  dvs.simple_kern.tc.P.$fq.wgt.${weight}_${damp}.1.5.${perc}.5x.ps
+ps2pdf $PS dvs.pdf
+mv dvs.pdf dvs.pdf.${ip}
+@ ip = $ip + 1
+end # end of foreach fq
+end # end of foreach damp
+end # end of foreach ws
+\ls dvs.pdf.? > junk
+\ls dvs.pdf.?? >> junk
+set pdfiles = `cat junk`
+gs -dBATCH -dNOPAUSE -q -sDEVICE=pdfwrite -sOutputFile=$PDF $pdfiles
+\rm dvs.pdf.*
+end # end of foreach para
+# for RM case
+@ i = 0
+RS:
+foreach para ( RS.tc )
+@ i ++
+@ ip = 1
+set GM = `echo $para | awk -F. '{print $1}'`
+\rm dvs.pdf.*
+set PDF = dvs.$GM.$refmdl[$i].5x.${perc}.pdf
+set cmax = 2
+foreach ws ( 1 )
+foreach damp ( 500 1000 2000 )
+foreach fq ( h m l )
+#plt_dvs.5x.cmd $cmax $damp $perc $para $ws $idemean $phase $fq $iflagdeg
+set PS =  dvs.simple_ray.tc.P.$fq.wgt.${weight}_${damp}.1.5.${perc}.5x.ps
+ps2pdf $PS dvs.pdf
+mv dvs.pdf dvs.pdf.${ip}
+@ ip = $ip + 1
+end
+end
+end
+\ls dvs.pdf.? > junk
+\ls dvs.pdf.?? >> junk
+set pdfiles = `cat junk`
+gs -dBATCH -dNOPAUSE -q -sDEVICE=pdfwrite -sOutputFile=$PDF $pdfiles
+\rm dvs.pdf.*
+end
+end # end of perc

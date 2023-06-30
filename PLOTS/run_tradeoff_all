@@ -1,0 +1,61 @@
+#!/bin/csh
+set phase  = S
+set mdlpara =  ( KM.tc KS.tc )
+#goto RQ
+#goto QH
+foreach fq ( m )
+@ i = 0
+foreach refmdl ( ak1c.tc ak1c.tc ) 
+@ i ++
+set para = $mdlpara[$i]
+foreach ws ( 1 10 )
+csh plt_tradeoff_SM.csh $refmdl $para y 10 10000 y $phase $fq $ws 0.5 0.1 1 0.1
+end
+end
+end
+QH:
+#KQ and KH
+#set mdlpara = ( KH KH KH.tc KH.tc KQ KQ KQ.tc KQ.tc )
+set mdlpara = ( KH.tc KQ.tc )
+#set mdlpara = ( KH.tc )
+foreach fq ( m )
+@ i = 0
+foreach refmdl ( ak1c.tc ak1c.tc )
+@ i ++
+set para = $mdlpara[$i]
+foreach ws ( 1 10 )
+#plt_tradeoff_QH.cmd $refmdl $para y 10 10000 y $phase $fq $ws 2 0.1 2 0.1
+plt_tradeoff_QH.csh $refmdl $para y 10 10000 y $phase $fq $ws 1 0.1 2 0.1
+end
+end
+end
+exit
+# RM
+RM:
+set mdlpara = ( RS.tc RM.tc )
+foreach fq ( m )
+@ i = 0
+#foreach refmdl ( iasp prem prem.tc iasp.tc ) 
+foreach refmdl ( ak1c.tc ak1c.tc ) 
+@ i ++
+set para = $mdlpara[$i]
+foreach ws ( 1 10 )
+csh plt_tradeoff_SM.csh $refmdl $para y 10 100000 y $phase $fq $ws 2 0.1 2 0.1
+end
+end
+end
+exit
+RQ:
+#RQ and RH
+set mdlpara = ( RH.tc RQ.tc )
+foreach fq ( m )
+@ i = 0
+#foreach refmdl ( iasp prem prem.tc iasp.tc iasp prem prem.tc iasp.tc ) 
+foreach refmdl ( ak1c.tc ak1c.tc ) 
+@ i ++
+set para = $mdlpara[$i]
+foreach ws ( 1 10 )
+csh plt_tradeoff_QH.csh $refmdl $para y 10 100000 y $phase $fq $ws 2 0.1 2 0.1
+end
+end
+end
